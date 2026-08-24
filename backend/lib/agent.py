@@ -81,10 +81,8 @@ async def run_agent_loop(
         transcript.append({"step": step, "raw": raw[:500], "action": action})
 
         act = (action.get("action") or "done").lower()
-        path = action.get("path") or ""
+        path = (action.get("path") or "").lstrip("/")
         content = action.get("content") or ""
-
-        observation = ""
 
         if act == "list_files":
             files = []
