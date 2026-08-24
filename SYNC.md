@@ -1,27 +1,32 @@
-# Remaining large files
+# Sync status (v3)
 
-Full source is provided as compressed companions:
+## On GitHub
+- [x] backend/lib/agent.py (full ReAct)
+- [x] backend/lib/* (connectors, deploy, self_verify — core present)
+- [x] frontend/src/ProjectSelector.tsx
+- [x] shared/canvas-injector.js
+- [x] scripts/* (provision, decode, finish_github_push)
+- [x] docker/*, docker-compose.yml, README, frontend shell
 
-- `backend/orchestrator.py.gz.b64` (46KB source)
-- `frontend/src/WorkspaceDashboard.tsx.gz.b64` (25KB source)
+## Still need full push (46KB + 25KB)
+- `backend/orchestrator.py`
+- `frontend/src/WorkspaceDashboard.tsx`
 
-## Restore
-
+### Finish with token (recommended)
 ```bash
-python scripts/decode_large_files.py
-```
-
-This writes the full `.py` / `.tsx` next to the `.gz.b64` files.
-
-## Alternative (token)
-
-```bash
-export GITHUB_TOKEN=ghp_...
+export GITHUB_TOKEN=ghp_your_token   # needs repo write
+# from the local full copy (artifacts/lovable-competitor):
 bash scripts/finish_github_push.sh
 ```
 
-## Status (v3)
-- [x] agent, connectors, deploy, self_verify
-- [x] ProjectSelector, canvas-injector, provision, docker
-- [x] Frontend shell, compose, README
-- [x] orchestrator.py + WorkspaceDashboard.tsx (via .gz.b64 + decode)
+That script uploads the real files via the GitHub Contents API.
+
+### Or copy from local + commit
+```bash
+git clone https://github.com/maqsoodjamvi1/lovable-studio-engine.git
+# copy the two files from your local artifacts, then:
+git add backend/orchestrator.py frontend/src/WorkspaceDashboard.tsx
+git commit -m "v3: full orchestrator + WorkspaceDashboard" && git push
+```
+
+Local full source is always complete under the project artifacts.
