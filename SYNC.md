@@ -1,30 +1,28 @@
 # Sync status (v3)
 
-## On GitHub
-- [x] backend/lib/agent.py (full ReAct)
-- [x] backend/lib/* (connectors, deploy, self_verify — core present)
-- [x] frontend/src/ProjectSelector.tsx
-- [x] shared/canvas-injector.js
-- [x] scripts/* (provision, decode, finish_github_push)
-- [x] docker/*, docker-compose.yml, README, frontend shell
+## GitHub connector = already authenticated
+The Grok GitHub connector uses OAuth as **maqsoodjamvi1**.
+You do **not** need to export `GITHUB_TOKEN` for connector-based pushes.
 
-## Still need full push (46KB + 25KB)
-- `backend/orchestrator.py`
-- `frontend/src/WorkspaceDashboard.tsx`
+## Done via connector
+- backend/lib/agent.py, connectors.py, deploy.py, self_verify.py
+- frontend/src/ProjectSelector.tsx, App.tsx, main.tsx, configs
+- shared/canvas-injector.js, scripts/*, docker/*, README
 
-### Finish with token (recommended)
+## Large files (payload size limit on connector tool calls)
+- backend/orchestrator.py (~46 KB)
+- frontend/src/WorkspaceDashboard.tsx (~25 KB)
+
+### Option A – finish script with your PAT
 ```bash
-export GITHUB_TOKEN=ghp_your_token   # needs repo write
-# from the local full copy (artifacts/lovable-competitor):
+export GITHUB_TOKEN=ghp_...   # classic token, repo scope
 bash scripts/finish_github_push.sh
 ```
 
-That script uploads the real files via the GitHub Contents API.
-
-### Or copy from local + commit
+### Option B – copy + git push from a machine with the full local tree
 ```bash
 git clone https://github.com/maqsoodjamvi1/lovable-studio-engine.git
-# copy the two files from your local artifacts, then:
+# copy the two files from artifacts/lovable-competitor
 git add backend/orchestrator.py frontend/src/WorkspaceDashboard.tsx
 git commit -m "v3: full orchestrator + WorkspaceDashboard" && git push
 ```
