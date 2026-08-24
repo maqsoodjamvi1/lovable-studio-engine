@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  orchestrator:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.backend
+    container_name: lovable-orchestrator
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - WORKSPACE_DIR=/var/platform/workspaces
+      - BACKUP_DIR=/var/platform/backups
+      - POSTGRES_CONTAINER=production-postgres
+      - POSTGRES_USER=postgres
+    volumes:
+      - workspaces:/var/platform/workspaces
+      - backups:/var/platform/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8000:8000"
+    depends_on:
+      - production-postgres
+    restart: unless-stopped
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.frontend
+    container_name: lovable-dashboard
+    ports:
+      - "3000:80"
+    depends_on:
+      - orchestrator
+    restart: unless-stopped
+
+  production-postgres:
+    image: postgres:16-alpine
+    container_name: production-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-platformsecret}
+      POSTGRES_DB: platform
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  workspaces:
+  backups:
+  pgdata:
